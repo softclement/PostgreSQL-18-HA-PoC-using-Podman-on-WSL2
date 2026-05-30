@@ -630,3 +630,48 @@ xxxxxxxxxxxx  podman  bridge
 | Restart managed by Swarm replica controller | Restart managed by systemd user units |
 
 ---
+## Connecting to WSL2 PostgreSQL from Windows DBeaver
+
+### Problem 1 — DBeaver cannot reach WSL2 PostgreSQL
+
+**Symptom:** Connection refused on `localhost:5434` from Windows DBeaver.
+
+**Cause:** WSL2 runs in its own virtual network namespace. `localhost` on Windows does not automatically route to `localhost` inside WSL2.
+
+**Fix:** Enable mirrored networking in WSL2.
+
+Create the file `C:\Users\<YourUser>\.wslconfig` with the following content:
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+
+Then restart WSL2 from PowerShell:
+
+```powershell
+wsl --shutdown
+```
+
+Reopen your WSL terminal and bring containers back up:
+
+```bash
+cd ~/pg-podman-ha
+podman-compose up -d
+```
+
+After this, `localhost:5434` works from Windows permanently — even after WSL2 restarts.
+
+---
+
+### Problem 2 — FATAL: invalid value for parameter "TimeZone": "Asia/Calcutta"
+
+**Symptom:** DBeaver connects successfully at the network level but immediately fails with:
+`FATAL: invalid value for parameter "TimeZone": "Asia/Calcutta"`
+
+**Cause:** PostgreSQL 18 removed the legacy timezone alias `Asia/Calcutta`. DBeaver inherits the Windows system locale and passes this alias to PostgreSQL before the connection completes, overriding any timezone set in the JDBC URL.
+
+**Fix:** Force DBeaver's JVM to use the correct timezone.
+
+Close DBeaver and edit `dbeaver.ini` (typically at `C:\Program Files\DBeaver\dbeaver.ini`).
+Add this line at the end of the file:
