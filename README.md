@@ -675,3 +675,19 @@ After this, `localhost:5434` works from Windows permanently — even after WSL2 
 
 Close DBeaver and edit `dbeaver.ini` (typically at `C:\Program Files\DBeaver\dbeaver.ini`).
 Add this line at the end of the file:
+
+-Duser.timezone=Asia/Kolkata
+
+Save and relaunch DBeaver.
+
+---
+
+### DBeaver Connection Settings
+
+| Field    | Value       |
+|----------|-------------|
+| Host     | `localhost`  |
+| Port     | `5434` (primary), `6001` (standby1), `6002` (standby2) |
+| Database | `postgres`  |
+| Username | `postgres`  |
+| Password | `postgres`  |
