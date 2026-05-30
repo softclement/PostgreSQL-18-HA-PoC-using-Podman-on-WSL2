@@ -630,9 +630,3 @@ xxxxxxxxxxxx  podman  bridge
 | Restart managed by Swarm replica controller | Restart managed by systemd user units |
 
 ---
-
-## Future Improvements
-
-- **Quadlets** — replace `podman generate systemd` (deprecated) with `.container` unit files managed natively by Podman. Cleaner, declarative, no separate generation step needed.
-- **Patroni** — add automatic primary election and standby promotion on failure on top of this setup.
-- **Multi-node Podman** — extend to multiple WSL2 or VM instances for true infrastructure-level HA.
